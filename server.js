@@ -5,40 +5,42 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 const cors = require('cors');
+const fs = require('fs');
 
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 1. DATABASE CONNECTION (Secured - Passwords Removed)
+// 1. DATABASE CONNECTION (Secured - Passwords .env file se aayenge)
 const db = mysql.createPool({
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    timezone: '+05:30',
+    dateStrings: true,
+    ssl: { ca: fs.readFileSync(path.join(__dirname, 'ca.pem')) }
 });
 
-// Test Connection
 (async () => {
     try {
         const connection = await db.getConnection();
-        console.log('✅ Database connected successfully!');
+        console.log('✅ Secured Aiven Cloud Database connected successfully!');
         connection.release();
     } catch (err) {
         console.error('❌ Database connection failed:', err.message);
     }
 })();
 
-// Secret Key Secured
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// 2. MIDDLEWARE (Security)
+// 2. MIDDLEWARE
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -86,11 +88,12 @@ app.post('/api/auth/login', async (req, res) => {
         const user = users[0];
 
         if (user.status === 'Banned') return res.status(403).json({ message: `Access Denied: Your account has been permanently Banned.` });
+        
         if (user.status === 'Suspended') {
             const [blockCheck] = await db.execute('SELECT block_until FROM users WHERE id = ?', [user.id]);
-            const blockUntil = blockCheck[0].block_until;
-            if (blockUntil && new Date(blockUntil) > new Date()) {
-                const dateStr = new Date(blockUntil).toLocaleString();
+            const blockUntil = new Date(blockCheck[0].block_until);
+            if (blockUntil > new Date()) {
+                const dateStr = blockUntil.toLocaleString('en-US', { hour12: true });
                 return res.status(403).json({ message: `Access Denied: Your account is temporarily blocked until ${dateStr}.` });
             } else {
                 await db.execute("UPDATE users SET status = 'Active', block_until = NULL WHERE id = ?", [user.id]);
@@ -100,7 +103,9 @@ app.post('/api/auth/login', async (req, res) => {
         
         const isMatch = await bcrypt.compare(password, user.password).catch(() => password === user.password);
         if (!isMatch) return res.status(401).json({ message: "Wrong password" });
-        await db.execute('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?', [user.id]);
+        
+        await db.execute('UPDATE users SET last_login = ? WHERE id = ?', [new Date(), user.id]);
+        
         const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '2h' });
         const redirectUrl = user.role === 'admin' ? '/admin-dashboard.html' : '/discovery.html';
         res.json({ 
@@ -113,7 +118,8 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.post('/api/auth/logout', verifyToken, async (req, res) => {
     try {
-        await db.execute('UPDATE users SET last_login = DATE_SUB(NOW(), INTERVAL 10 MINUTE) WHERE id = ?', [req.user.id]);
+        const pastTime = new Date(Date.now() - 10 * 60000);
+        await db.execute('UPDATE users SET last_login = ? WHERE id = ?', [pastTime, req.user.id]);
         res.json({ success: true, message: "Logged out successfully" });
     } catch (err) { res.status(500).json({ message: err.message }); }
 });
@@ -175,15 +181,24 @@ app.post('/api/bookings/checkout', verifyToken, async (req, res) => {
 app.put('/api/bookings/:id/approve', verifyToken, isAdmin, async (req, res) => {
     const { vehicle_id } = req.body;
     try {
-        await db.execute('UPDATE bookings SET status = "Approved" WHERE id = ?', [req.params.id]);
-        await db.execute('UPDATE vehicles SET quantity = quantity - 1 WHERE id = ?', [vehicle_id]);
+        await db.execute("UPDATE bookings SET status = 'Approved' WHERE id = ?", [req.params.id]);
+        
+        let v_id = vehicle_id;
+        if (!v_id) {
+            const [bData] = await db.execute('SELECT vehicle_id FROM bookings WHERE id = ?', [req.params.id]);
+            if (bData.length > 0) v_id = bData[0].vehicle_id;
+        }
+        if (v_id) {
+            await db.execute('UPDATE vehicles SET quantity = quantity - 1 WHERE id = ?', [v_id]);
+        }
+        
         res.json({ success: true, message: "Booking Approved successfully." });
     } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
 app.put('/api/bookings/:id/reject', verifyToken, isAdmin, async (req, res) => {
     try {
-        await db.execute('UPDATE bookings SET status = "Rejected" WHERE id = ?', [req.params.id]);
+        await db.execute("UPDATE bookings SET status = 'Rejected' WHERE id = ?", [req.params.id]);
         res.json({ success: true, message: "Booking Rejected." });
     } catch (err) { res.status(500).json({ message: err.message }); }
 });
@@ -234,12 +249,12 @@ app.get('/api/bookings/all', verifyToken, isAdmin, async (req, res) => {
 
 app.get('/api/bookings/stats', verifyToken, isAdmin, async (req, res) => {
     try {
-        const [rev] = await db.execute('SELECT SUM(total_price) as total FROM bookings WHERE status != "Rejected"');
-        const [active] = await db.execute('SELECT COUNT(*) as count FROM bookings WHERE end_date >= CURDATE() AND status = "Approved"');
+        const [rev] = await db.execute("SELECT SUM(total_price) as total FROM bookings WHERE status != 'Rejected'");
+        const [active] = await db.execute("SELECT COUNT(*) as count FROM bookings WHERE end_date >= CURDATE() AND status = 'Approved'");
         const [totalCars] = await db.execute('SELECT SUM(GREATEST(quantity, 0)) as count FROM vehicles');
-        const [avail] = await db.execute('SELECT SUM(quantity) as count FROM vehicles WHERE status = "available" AND quantity > 0');
-        const [maint] = await db.execute('SELECT SUM(quantity) as count FROM vehicles WHERE status = "maintenance" AND quantity > 0');
-        const [oos] = await db.execute('SELECT COUNT(*) as count FROM vehicles WHERE quantity <= 0 OR status = "out of stock"');
+        const [avail] = await db.execute("SELECT SUM(quantity) as count FROM vehicles WHERE status = 'available' AND quantity > 0");
+        const [maint] = await db.execute("SELECT SUM(quantity) as count FROM vehicles WHERE status = 'maintenance' AND quantity > 0");
+        const [oos] = await db.execute("SELECT COUNT(*) as count FROM vehicles WHERE quantity <= 0 OR status = 'out of stock'");
 
         res.json({ 
             totalRevenue: rev[0].total || 0, 
@@ -254,15 +269,15 @@ app.get('/api/bookings/stats', verifyToken, isAdmin, async (req, res) => {
 
 app.get('/api/reports/data', verifyToken, isAdmin, async (req, res) => {
     try {
-        const [rev] = await db.execute('SELECT SUM(total_price) as total FROM bookings WHERE status != "Rejected"');
-        const [bookingsCount] = await db.execute('SELECT COUNT(*) as count FROM bookings WHERE status != "Rejected"');
-        const [active] = await db.execute('SELECT COUNT(*) as count FROM bookings WHERE end_date >= CURDATE() AND status = "Approved"');
+        const [rev] = await db.execute("SELECT SUM(total_price) as total FROM bookings WHERE status != 'Rejected'");
+        const [bookingsCount] = await db.execute("SELECT COUNT(*) as count FROM bookings WHERE status != 'Rejected'");
+        const [active] = await db.execute("SELECT COUNT(*) as count FROM bookings WHERE end_date >= CURDATE() AND status = 'Approved'");
         
         const [topVehicles] = await db.execute(`
             SELECT v.name, COUNT(b.id) as rent_count 
             FROM vehicles v 
             JOIN bookings b ON v.id = b.vehicle_id 
-            WHERE b.status != "Rejected"
+            WHERE b.status != 'Rejected'
             GROUP BY v.id, v.name
             ORDER BY rent_count DESC LIMIT 5
         `);
@@ -271,7 +286,7 @@ app.get('/api/reports/data', verifyToken, isAdmin, async (req, res) => {
             SELECT v.type, COUNT(b.id) as rent_count 
             FROM vehicles v 
             JOIN bookings b ON v.id = b.vehicle_id 
-            WHERE b.status != "Rejected"
+            WHERE b.status != 'Rejected'
             GROUP BY v.type
         `);
 
@@ -329,14 +344,15 @@ app.get('/api/all-customers', verifyToken, isAdmin, async (req, res) => {
 app.put('/api/users/:id/block', verifyToken, isAdmin, async (req, res) => {
     const { days } = req.body;
     try {
-        await db.execute('UPDATE users SET status = "Suspended", block_until = DATE_ADD(NOW(), INTERVAL ? DAY) WHERE id = ?', [days, req.params.id]);
+        const futureTime = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+        await db.execute("UPDATE users SET status = 'Suspended', block_until = ? WHERE id = ?", [futureTime, req.params.id]);
         res.json({ success: true, message: `User blocked for ${days} days.` });
     } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
 app.put('/api/users/:id/unblock', verifyToken, isAdmin, async (req, res) => {
     try {
-        await db.execute('UPDATE users SET status = "Active", block_until = NULL WHERE id = ?', [req.params.id]);
+        await db.execute("UPDATE users SET status = 'Active', block_until = NULL WHERE id = ?", [req.params.id]);
         res.json({ success: true, message: `User unblocked.` });
     } catch (err) { res.status(500).json({ message: err.message }); }
 });
@@ -353,7 +369,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Deployment Port Update
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Server live: http://localhost:${PORT}`);
