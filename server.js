@@ -11,7 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'Public')));
 
 // 1. DATABASE CONNECTION (Secured - Passwords .env file se aayenge)
 const db = mysql.createPool({
@@ -366,7 +366,7 @@ app.put('/api/users/:id/status', verifyToken, isAdmin, async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    res.sendFile(path.join(__dirname, 'Public', 'login.html'));
 });
 
 const PORT = process.env.PORT || 3000;
