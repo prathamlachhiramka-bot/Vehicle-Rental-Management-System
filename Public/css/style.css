@@ -1,0 +1,1071 @@
+/* VoltDrive Custom Styles
+   Base Theme: Light/Professional
+*/
+
+:root {
+    --primary-blue: #2563eb;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(0, 0, 0, 0.08);
+}
+
+/* 1. Smooth Transitions for All Interative Elements */
+* {
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+/* 2. Professional Glass-morphism (White Theme) */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+}
+
+/* 3. Shimmer Border Animation for Fleet Cards */
+.shimmer-border {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-border::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+        135deg, 
+        rgba(37, 99, 235, 0.2) 0%, 
+        rgba(255, 255, 255, 0) 50%, 
+        rgba(37, 99, 235, 0.2) 100%
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+}
+
+/* 4. Custom Professional Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* 5. Dashboard Stat Card Hover */
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+/* 6. Active Tab Indicator Animation (Login Page) */
+.active-tab-indicator {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 7. Skeleton Loading Placeholder (For Fleet Discovery) */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* 8. Success Modal Entrance */
+.modal-entrance {
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* ==========================================
+   9. ADDED: LOGIN PAGE & PARALLAX SPECIFICS
+   ========================================== */
+
+.glass-morphism {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glow-effect {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+@keyframes pulse-slow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 3s infinite;
+}
+
+#parallax-bg {
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+    transform: scale(1.1); 
+}
+
+/* ==========================================
+   10. GLOBAL THEME OVERRIDES
+   ========================================== */
+
+body.bg-gray-50 {
+    background-color: #ffffff !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+    color: #111827 !important;
+}
+
+body.bg-gray-50 header, 
+body.bg-gray-50 .bg-white, 
+body.bg-gray-50 .glass-panel {
+    background-color: #ffffff !important;
+    border-color: rgba(0, 0, 0, 0.05) !important;
+    color: #111827 !important;
+}
+
+body.bg-gray-50 .text-gray-900, 
+body.bg-gray-50 .text-gray-700 {
+    color: #111827 !important;
+}
+
+body.bg-gray-50 .text-gray-500, 
+body.bg-gray-50 .text-gray-400 {
+    color: #6B7280 !important;
+}
+
+body.bg-gray-50 table, 
+body.bg-gray-50 table .bg-white, 
+body.bg-gray-50 table tr, 
+body.bg-gray-50 table td, 
+body.bg-gray-50 table th, 
+body.bg-gray-50 table thead, 
+body.bg-gray-50 table tbody {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    border-color: #E5E7EB !important;
+}
+
+body.bg-gray-50 table .text-gray-900 {
+    color: #111827 !important;
+}
+
+body.bg-gray-50 table .text-gray-500 {
+    color: #6B7280 !important;
+}
+
+body.bg-gray-50 input, 
+body.bg-gray-50 select, 
+body.bg-gray-50 textarea {
+    background-color: #ffffff !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: #111827 !important;
+}
+
+/* ==========================================
+   11. ABOUT US PAGE - PREMIUM DARK THEME
+   ========================================== */
+
+body.about-dark-theme {
+    background-color: #12151c !important; 
+    background-image: none !important; 
+}
+
+body.about-dark-theme header {
+    background-color: #1a1d24 !important; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+body.about-dark-theme header h1, body.about-dark-theme header .text-blue-600 {
+    color: #4ade80 !important; 
+}
+
+body.about-dark-theme header a, body.about-dark-theme header button span {
+    color: #9ca3af !important; 
+}
+
+/* Added Header Hover Animation for About Page */
+body.about-dark-theme header a:hover, 
+body.about-dark-theme header button.text-gray-600:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: #4ade80 !important; 
+    border-radius: 0.5rem;
+}
+
+body.about-dark-theme header .border-blue-600 {
+    border-color: #4ade80 !important; 
+    color: #4ade80 !important; 
+}
+
+body.about-dark-theme header button {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.about-dark-theme header button:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.about-dark-theme .text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.about-dark-theme .text-gray-500, body.about-dark-theme .text-gray-700 {
+    color: #94a3b8 !important;
+}
+
+body.about-dark-theme .text-blue-600 {
+    color: #4ade80 !important; 
+}
+
+body.about-dark-theme .bg-white, body.about-dark-theme .bg-gray-50 {
+    background-color: #1e222b !important; 
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.about-dark-theme .bg-blue-50, body.about-dark-theme .bg-blue-100 {
+    background-color: rgba(74, 222, 128, 0.1) !important; 
+    color: #4ade80 !important;
+}
+
+body.about-dark-theme #profileDropdown, body.about-dark-theme #customerProfileModal .bg-white {
+    background-color: #1e222b !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.about-dark-theme #profileDropdown a:hover, body.about-dark-theme #profileDropdown button:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ==========================================
+   12. ADMIN DASHBOARD - PREMIUM DARK THEME
+   ========================================== */
+
+body.admin-dark-theme {
+    background-color: #15171e !important; 
+    background-image: none !important;
+}
+
+body.admin-dark-theme header.bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.admin-dark-theme header h1.text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.admin-dark-theme header span.text-blue-800,
+body.admin-dark-theme header span.text-blue-600 {
+    color: #4ade80 !important; 
+}
+
+body.admin-dark-theme header nav a.border-blue-600 {
+    border-color: #4ade80 !important;
+    color: #4ade80 !important;
+}
+
+body.admin-dark-theme header nav a.text-gray-500:hover,
+body.admin-dark-theme header button:hover {
+    color: #4ade80 !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.admin-dark-theme .text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.admin-dark-theme .text-gray-600,
+body.admin-dark-theme .text-gray-500,
+body.admin-dark-theme .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+body.admin-dark-theme main .bg-white {
+    background-color: #1e222d !important; 
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.admin-dark-theme .bg-purple-50 { background-color: rgba(168, 85, 247, 0.1) !important; }
+body.admin-dark-theme .bg-green-50 { background-color: rgba(34, 197, 94, 0.1) !important; }
+body.admin-dark-theme .bg-blue-50 { background-color: rgba(59, 130, 246, 0.1) !important; }
+body.admin-dark-theme .bg-orange-50 { background-color: rgba(249, 115, 22, 0.1) !important; }
+body.admin-dark-theme .bg-red-50 { background-color: rgba(239, 68, 68, 0.1) !important; }
+
+body.admin-dark-theme #adminMessagesModal .bg-white,
+body.admin-dark-theme #adminMessagesModal .bg-gray-50 {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ==========================================
+   13. BOOKINGS PAGE - PREMIUM DARK THEME
+   ========================================== */
+
+body.bookings-dark-theme {
+    background-color: #15171e !important;
+    background-image: none !important;
+}
+
+body.bookings-dark-theme header.bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.bookings-dark-theme header h1.text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.bookings-dark-theme header span.text-blue-800,
+body.bookings-dark-theme header span.text-blue-600 {
+    color: #4ade80 !important;
+}
+
+body.bookings-dark-theme header nav a.border-blue-600 {
+    border-color: #4ade80 !important;
+    color: #4ade80 !important;
+}
+
+body.bookings-dark-theme header nav a.text-gray-500:hover,
+body.bookings-dark-theme header button:hover {
+    color: #4ade80 !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.bookings-dark-theme .text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.bookings-dark-theme .text-gray-600,
+body.bookings-dark-theme .text-gray-500,
+body.bookings-dark-theme .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+body.bookings-dark-theme main .bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.bookings-dark-theme table {
+    background-color: transparent !important;
+}
+
+body.bookings-dark-theme thead tr {
+    background-color: #1a1d24 !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.bookings-dark-theme th {
+    color: #9ca3af !important;
+}
+
+body.bookings-dark-theme tbody tr {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.bookings-dark-theme tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+body.bookings-dark-theme #adminMessagesModal .bg-white,
+body.bookings-dark-theme #adminMessagesModal .bg-gray-50 {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ==========================================
+   14. CHECKOUT PAGE - PREMIUM DARK THEME
+   ========================================== */
+
+body.checkout-dark-theme {
+    background-color: #15171e !important;
+    background-image: none !important;
+}
+
+body.checkout-dark-theme form.bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.checkout-dark-theme form .bg-gray-50 {
+    background-color: #1a1d24 !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.checkout-dark-theme input,
+body.checkout-dark-theme select {
+    background-color: #15171e !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+body.checkout-dark-theme input:focus,
+body.checkout-dark-theme select:focus {
+    border-color: #4ade80 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2) !important;
+}
+
+body.checkout-dark-theme .text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.checkout-dark-theme .text-gray-600,
+body.checkout-dark-theme .text-gray-500,
+body.checkout-dark-theme .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+body.checkout-dark-theme .text-blue-600,
+body.checkout-dark-theme .text-blue-800 {
+    color: #4ade80 !important;
+}
+
+body.checkout-dark-theme .bg-blue-600 {
+    background-color: #4ade80 !important;
+    color: #15171e !important; 
+}
+
+body.checkout-dark-theme .bg-blue-600:hover {
+    background-color: #22c55e !important;
+}
+
+body.checkout-dark-theme .bg-blue-50 {
+    background-color: rgba(74, 222, 128, 0.1) !important;
+    border-color: rgba(74, 222, 128, 0.2) !important;
+}
+
+/* ==========================================
+   15. DISCOVERY PAGE - PREMIUM DARK THEME
+   ========================================== */
+
+body.discovery-dark-theme {
+    background-color: #15171e !important;
+    background-image: none !important;
+}
+
+body.discovery-dark-theme header.bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Added Header Hover Animation for Discovery Page */
+body.discovery-dark-theme header a.text-gray-600:hover,
+body.discovery-dark-theme header button.text-gray-600:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: #4ade80 !important;
+    border-radius: 0.5rem;
+}
+
+body.discovery-dark-theme .bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.discovery-dark-theme .bg-gray-50,
+body.discovery-dark-theme .bg-gray-100 {
+    background-color: #1a1d24 !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Inputs & Selects inside Discovery */
+body.discovery-dark-theme input,
+body.discovery-dark-theme select {
+    background-color: #15171e !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+body.discovery-dark-theme input:focus,
+body.discovery-dark-theme select:focus {
+    border-color: #4ade80 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2) !important;
+}
+
+/* Typography Overrides */
+body.discovery-dark-theme .text-gray-900,
+body.discovery-dark-theme .text-gray-700,
+body.discovery-dark-theme h3.text-xl, /* Forces Vehicle Names to White */
+body.discovery-dark-theme span.text-2xl /* Forces Pricing to White */ {
+    color: #ffffff !important;
+}
+
+body.discovery-dark-theme .text-gray-600,
+body.discovery-dark-theme .text-gray-500,
+body.discovery-dark-theme .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+/* Mint Green Accents (Replacing the original Blue) */
+body.discovery-dark-theme .text-blue-600 {
+    color: #4ade80 !important;
+}
+
+body.discovery-dark-theme .bg-blue-600 {
+    background-color: #4ade80 !important;
+    color: #15171e !important; /* Dark text for contrast on buttons */
+}
+
+body.discovery-dark-theme .bg-blue-600:hover {
+    background-color: #22c55e !important;
+}
+
+body.discovery-dark-theme .bg-blue-50 {
+    background-color: rgba(74, 222, 128, 0.1) !important;
+    color: #4ade80 !important;
+}
+
+body.discovery-dark-theme .border-blue-100 {
+    border-color: rgba(74, 222, 128, 0.2) !important;
+}
+
+/* Overriding the default red Out of Stock badges to fit dark mode better */
+body.discovery-dark-theme .bg-red-100 {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+body.discovery-dark-theme .text-red-700 {
+    color: #ef4444 !important;
+}
+
+/* Modal styling for Profile Modal */
+body.discovery-dark-theme #customerProfileModal .bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ==========================================
+   16. HELP PAGE - PREMIUM DARK THEME
+   ========================================== */
+
+body.help-dark-theme {
+    background-color: #15171e !important;
+    background-image: none !important;
+}
+
+body.help-dark-theme header.bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Added Header Hover Animation for Help Page */
+body.help-dark-theme header a.text-gray-600:hover,
+body.help-dark-theme header button.text-gray-600:hover,
+body.help-dark-theme header nav a.text-gray-500:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: #4ade80 !important;
+    border-radius: 0.5rem;
+}
+
+body.help-dark-theme .bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.help-dark-theme input,
+body.help-dark-theme textarea {
+    background-color: #15171e !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+body.help-dark-theme input:focus,
+body.help-dark-theme textarea:focus {
+    border-color: #4ade80 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2) !important;
+}
+
+body.help-dark-theme .text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.help-dark-theme .text-gray-700,
+body.help-dark-theme .text-gray-600,
+body.help-dark-theme .text-gray-500,
+body.help-dark-theme .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+body.help-dark-theme header h1.text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.help-dark-theme header .text-blue-600,
+body.help-dark-theme main .text-blue-600 {
+    color: #4ade80 !important;
+}
+
+body.help-dark-theme .bg-blue-600 {
+    background-color: #4ade80 !important;
+    color: #15171e !important; 
+}
+
+body.help-dark-theme .bg-blue-600:hover {
+    background-color: #22c55e !important;
+}
+
+body.help-dark-theme header nav a.border-blue-600 {
+    border-color: #4ade80 !important;
+    color: #4ade80 !important;
+}
+
+body.help-dark-theme #customerProfileModal .bg-gray-50 {
+    background-color: #1a1d24 !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.help-dark-theme .border-gray-100 {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.help-dark-theme .border-gray-200 {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.help-dark-theme .bg-gray-50 {
+    background-color: transparent !important;
+}
+
+/* ==========================================
+   17. INVENTORY PAGE - PREMIUM DARK THEME
+   ========================================== */
+
+body.inventory-dark-theme {
+    background-color: #15171e !important;
+    background-image: none !important;
+}
+
+body.inventory-dark-theme header.bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.inventory-dark-theme header h1.text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.inventory-dark-theme header span.text-blue-800,
+body.inventory-dark-theme header span.text-blue-600 {
+    color: #4ade80 !important;
+}
+
+body.inventory-dark-theme header nav a.border-blue-600 {
+    border-color: #4ade80 !important;
+    color: #4ade80 !important;
+}
+
+body.inventory-dark-theme header nav a.text-gray-500:hover,
+body.inventory-dark-theme header button:hover {
+    color: #4ade80 !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.inventory-dark-theme main .bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.inventory-dark-theme .text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.inventory-dark-theme .text-gray-700,
+body.inventory-dark-theme .text-gray-600,
+body.inventory-dark-theme .text-gray-500,
+body.inventory-dark-theme .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+body.inventory-dark-theme input,
+body.inventory-dark-theme select {
+    background-color: #15171e !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+body.inventory-dark-theme input:focus,
+body.inventory-dark-theme select:focus {
+    border-color: #4ade80 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2) !important;
+}
+
+body.inventory-dark-theme .bg-blue-600 {
+    background-color: #4ade80 !important;
+    color: #15171e !important;
+}
+
+body.inventory-dark-theme .bg-blue-600:hover {
+    background-color: #22c55e !important;
+}
+
+body.inventory-dark-theme table {
+    background-color: transparent !important;
+}
+
+body.inventory-dark-theme thead tr {
+    background-color: #1a1d24 !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.inventory-dark-theme th {
+    color: #9ca3af !important;
+}
+
+body.inventory-dark-theme tbody tr {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.inventory-dark-theme tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+body.inventory-dark-theme #adminMessagesModal .bg-white,
+body.inventory-dark-theme #adminMessagesModal .bg-gray-50,
+body.inventory-dark-theme #profileDropdown {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.inventory-dark-theme #profileDropdown a:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ==========================================
+   18. MY BOOKINGS PAGE - PREMIUM DARK THEME
+   ========================================== */
+
+body.mybookings-dark-theme {
+    background-color: #15171e !important;
+    background-image: none !important;
+}
+
+body.mybookings-dark-theme header.bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Added Header Hover Animation for My Bookings Page */
+body.mybookings-dark-theme header a.text-gray-600:hover,
+body.mybookings-dark-theme header button.text-gray-600:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: #4ade80 !important;
+    border-radius: 0.5rem;
+}
+
+/* Typography Overrides */
+body.mybookings-dark-theme .text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.mybookings-dark-theme .text-gray-700,
+body.mybookings-dark-theme .text-gray-600,
+body.mybookings-dark-theme .text-gray-500,
+body.mybookings-dark-theme .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+/* Accents (Replacing Blue with Mint Green) */
+body.mybookings-dark-theme header h1.text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.mybookings-dark-theme .text-blue-600 {
+    color: #4ade80 !important;
+}
+
+body.mybookings-dark-theme .bg-blue-50 {
+    background-color: rgba(74, 222, 128, 0.1) !important;
+    color: #4ade80 !important;
+}
+
+body.mybookings-dark-theme .border-blue-100 {
+    border-color: rgba(74, 222, 128, 0.2) !important;
+}
+
+/* Modifying the Loyalty Banner to fit the dark theme */
+body.mybookings-dark-theme .bg-gradient-to-r {
+    background: linear-gradient(to right, #1a1d24, #1e222d) !important;
+    border: 1px solid rgba(74, 222, 128, 0.2) !important;
+}
+
+body.mybookings-dark-theme .text-blue-100 {
+    color: #9ca3af !important;
+}
+
+/* Table Cards and Table Overrides */
+body.mybookings-dark-theme main .bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.mybookings-dark-theme table {
+    background-color: transparent !important;
+}
+
+body.mybookings-dark-theme thead tr,
+body.mybookings-dark-theme .bg-gray-50 {
+    background-color: #1a1d24 !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.mybookings-dark-theme th {
+    color: #9ca3af !important;
+}
+
+body.mybookings-dark-theme tbody tr {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: transparent !important;
+}
+
+body.mybookings-dark-theme tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Modals */
+body.mybookings-dark-theme #qrModal .bg-white,
+body.mybookings-dark-theme #cancelModal .bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* QR Code Container Needs White Background */
+body.mybookings-dark-theme #qrcode {
+    background-color: #ffffff !important;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* Modal Buttons & Fills */
+body.mybookings-dark-theme .bg-gray-100 {
+    background-color: #1a1d24 !important;
+    color: #ffffff !important;
+}
+
+body.mybookings-dark-theme .bg-gray-100:hover {
+    background-color: #2d3748 !important;
+}
+
+body.mybookings-dark-theme .bg-red-50 {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    color: #ef4444 !important;
+}
+
+/* ==========================================
+   19. REPORTS PAGE - PREMIUM DARK THEME
+   ========================================== */
+
+body.reports-dark-theme {
+    background-color: #15171e !important;
+    background-image: none !important;
+}
+
+body.reports-dark-theme header.bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.reports-dark-theme header h1.text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.reports-dark-theme header span.text-blue-800,
+body.reports-dark-theme header span.text-blue-600 {
+    color: #4ade80 !important;
+}
+
+body.reports-dark-theme header nav a.border-blue-600 {
+    border-color: #4ade80 !important;
+    color: #4ade80 !important;
+}
+
+body.reports-dark-theme header nav a.text-gray-500:hover,
+body.reports-dark-theme header button:hover {
+    color: #4ade80 !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Card Overrides */
+body.reports-dark-theme main .bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Typography Overrides */
+body.reports-dark-theme .text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.reports-dark-theme .text-gray-700,
+body.reports-dark-theme .text-gray-600,
+body.reports-dark-theme .text-gray-500,
+body.reports-dark-theme .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+/* Color Highlights on Analytics */
+body.reports-dark-theme .text-blue-600 {
+    color: #4ade80 !important; /* Total Revenue text to Mint Green */
+}
+
+body.reports-dark-theme .text-red-500 {
+    color: #ef4444 !important; /* Keep red vivid for Total Bookings */
+}
+
+body.reports-dark-theme .text-green-500 {
+    color: #22c55e !important; /* Keep green vivid for Active Rentals */
+}
+
+/* Modals */
+body.reports-dark-theme #adminMessagesModal .bg-white,
+body.reports-dark-theme #adminMessagesModal .bg-gray-50 {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ==========================================
+   20. CUSTOMERS PAGE - PREMIUM DARK THEME
+   ========================================== */
+
+body.customers-dark-theme {
+    background-color: #15171e !important;
+    background-image: none !important;
+}
+
+body.customers-dark-theme header.bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Header Text & Hover Accents */
+body.customers-dark-theme header h1.text-gray-900 { color: #ffffff !important; }
+body.customers-dark-theme header span.text-blue-800,
+body.customers-dark-theme header span.text-blue-600 { color: #4ade80 !important; }
+
+body.customers-dark-theme header nav a.border-blue-600 {
+    border-color: #4ade80 !important;
+    color: #4ade80 !important;
+}
+
+body.customers-dark-theme header nav a.text-gray-500:hover,
+body.customers-dark-theme header button:hover {
+    color: #4ade80 !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Main Container & Table Setup */
+body.customers-dark-theme main .bg-white,
+body.customers-dark-theme .bg-white.overflow-hidden {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.customers-dark-theme table { background-color: transparent !important; }
+
+body.customers-dark-theme thead tr,
+body.customers-dark-theme .bg-gray-50 {
+    background-color: #1a1d24 !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.customers-dark-theme th { color: #9ca3af !important; border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important; }
+
+body.customers-dark-theme tbody tr {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: transparent !important;
+}
+
+body.customers-dark-theme tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* General Typography */
+body.customers-dark-theme .text-gray-900 { color: #ffffff !important; }
+body.customers-dark-theme .text-gray-700,
+body.customers-dark-theme .text-gray-600,
+body.customers-dark-theme .text-gray-500,
+body.customers-dark-theme .text-gray-400 { color: #9ca3af !important; }
+body.customers-dark-theme .text-blue-600 { color: #4ade80 !important; } /* IDs to Mint Green */
+
+/* Modals & Popups */
+body.customers-dark-theme #securityControlModal .bg-white,
+body.customers-dark-theme #adminMessagesModal .bg-white {
+    background-color: #1e222d !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.customers-dark-theme #securityControlModal .bg-gray-50,
+body.customers-dark-theme #adminMessagesModal .bg-gray-50 {
+    background-color: #1a1d24 !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Modal Inputs */
+body.customers-dark-theme input {
+    background-color: #15171e !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+body.customers-dark-theme input:focus {
+    border-color: #4ade80 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2) !important;
+}
+
+/* Dynamic JS Badges & Buttons */
+body.customers-dark-theme .bg-gray-100 { background-color: #1a1d24 !important; color: #9ca3af !important; border-color: rgba(255,255,255,0.05) !important; }
+body.customers-dark-theme .bg-gray-100:hover { background-color: #2d3748 !important; color: #ffffff !important; }
+
+/* Active Badge */
+body.customers-dark-theme .bg-green-100 { background-color: rgba(74, 222, 128, 0.1) !important; border-color: rgba(74, 222, 128, 0.2) !important; color: #4ade80 !important; }
+body.customers-dark-theme .bg-green-50 { background-color: rgba(74, 222, 128, 0.05) !important; border-color: rgba(74, 222, 128, 0.1) !important; color: #4ade80 !important; }
+body.customers-dark-theme .bg-green-50:hover { background-color: rgba(74, 222, 128, 0.15) !important; }
+body.customers-dark-theme .text-green-700 { color: #4ade80 !important; }
+
+/* Suspended Badge */
+body.customers-dark-theme .bg-orange-100 { background-color: rgba(249, 115, 22, 0.1) !important; border-color: rgba(249, 115, 22, 0.2) !important; color: #f97316 !important; }
+body.customers-dark-theme .bg-orange-50 { background-color: rgba(249, 115, 22, 0.05) !important; border-color: rgba(249, 115, 22, 0.1) !important; color: #f97316 !important; }
+body.customers-dark-theme .bg-orange-50:hover { background-color: rgba(249, 115, 22, 0.15) !important; }
+body.customers-dark-theme .text-orange-700 { color: #f97316 !important; }
+
+/* Banned Badge */
+body.customers-dark-theme .bg-red-100 { background-color: rgba(239, 68, 68, 0.1) !important; border-color: rgba(239, 68, 68, 0.2) !important; color: #ef4444 !important; }
+body.customers-dark-theme .bg-red-50 { background-color: rgba(239, 68, 68, 0.05) !important; border-color: rgba(239, 68, 68, 0.1) !important; color: #ef4444 !important; }
+body.customers-dark-theme .bg-red-50:hover { background-color: rgba(239, 68, 68, 0.15) !important; }
+body.customers-dark-theme .text-red-700 { color: #ef4444 !important; }

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>VoltDrive | Unified Authentication Gateway</title>
+    
+    <link rel="stylesheet" href="css/login.css">
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#00311f",
+                      "on-tertiary-fixed-variant": "#653e00",
+                      "primary": "#adc6ff",
+                      "on-tertiary-fixed": "#2a1700",
+                      "on-error-container": "#ffdad6",
+                      "secondary-fixed-dim": "#4edea3",
+                      "secondary-fixed": "#6ffbbe",
+                      "tertiary": "#ffb95f",
+                      "on-primary-fixed": "#001a42",
+                      "inverse-primary": "#005ac2",
+                      "secondary": "#4edea3",
+                      "error-container": "#93000a",
+                      "inverse-on-surface": "#313032",
+                      "on-primary-container": "#00285d",
+                      "tertiary-container": "#ca8100",
+                      "on-surface-variant": "#c2c6d6",
+                      "on-tertiary-container": "#3e2400",
+                      "surface-tint": "#adc6ff",
+                      "on-secondary-fixed": "#002113",
+                      "inverse-surface": "#e5e1e4",
+                      "surface-container-high": "#2a2a2c",
+                      "on-primary-fixed-variant": "#004395",
+                      "on-secondary": "#003824",
+                      "surface-container-highest": "#353437",
+                      "surface-container": "#201f22",
+                      "primary-fixed": "#d8e2ff",
+                      "on-background": "#e5e1e4",
+                      "tertiary-fixed": "#ffddb8",
+                      "surface-variant": "#353437",
+                      "outline-variant": "#424754",
+                      "surface-dim": "#131315",
+                      "surface-container-lowest": "#0e0e10",
+                      "on-secondary-fixed-variant": "#005236",
+                      "on-primary": "#002e6a",
+                      "on-surface": "#e5e1e4",
+                      "surface-container-low": "#1c1b1d",
+                      "primary-fixed-dim": "#adc6ff",
+                      "surface": "#131315",
+                      "background": "#131315",
+                      "on-error": "#690005",
+                      "primary-container": "#4d8eff",
+                      "surface-bright": "#39393b",
+                      "error": "#ffb4ab",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "outline": "#8c909f",
+                      "secondary-container": "#00a572",
+                      "on-tertiary": "#472a00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "container-max": "1440px",
+                      "gutter": "24px",
+                      "unit": "4px",
+                      "margin-desktop": "40px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Geist"],
+                      "body-md": ["Geist"],
+                      "headline-lg": ["Geist"],
+                      "label-caps": ["JetBrains Mono"],
+                      "headline-lg-mobile": ["Geist"],
+                      "body-sm": ["Geist"],
+                      "headline-md": ["Geist"],
+                      "display": ["Geist"]
+              },
+              "fontSize": {
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex items-center justify-center overflow-hidden">
+    
+    <div class="fixed inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/20 z-10"></div>
+        <img id="parallax-bg" alt="Cinematic car interior" class="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7-l-ksum0rfas9YE_-U89Q2mkDGybw5GHsypOEdoux8BCdZkffigjSpZI28-Pz0IML6daOTCfuP542Fe985BFnXLH17kW18QtoZVcV06QrG_waGsLhZw2lNfKd5O6CtJEyF6krshgT4BynIbeCYC48jBBzE6A7h6iqJJkik5ZiHc7TKLjLZ1wZgDtTxZJts3AqKKmnhDQDjllHYjedW26EFrkiGX0QmsGVRp0ix5osxc4MHbpLgNrGgf4tbrYTvaK5osxL0qralte">
+    </div>
+
+    <main class="relative z-20 w-full max-w-[1440px] px-margin-mobile md:px-margin-desktop flex justify-center items-center">
+        <div class="glass-morphism shimmer-border rounded-xl p-8 md:p-10 w-full max-w-[480px] flex flex-col gap-8 glow-effect">
+            
+            <div class="flex flex-col items-center gap-2">
+                <div class="flex items-center gap-2 text-primary">
+                    <span class="material-symbols-outlined text-[40px]">electric_car</span>
+                    <h1 class="text-headline-lg font-headline-lg tracking-tight">VoltDrive</h1>
+                </div>
+                <p class="text-on-surface-variant font-body-sm text-center">Enter your credentials to access the fleet gateway</p>
+            </div>
+
+            <div class="relative bg-surface-container-low p-1 rounded-lg flex items-center">
+                <div class="absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-primary/20 border border-primary/30 rounded-lg active-tab-indicator left-1" id="role-indicator" style="left: calc(50% + 0px);"></div>
+                <button class="relative z-10 flex-1 py-2 text-label-caps font-label-caps text-center text-on-surface-variant" onclick="switchRole('customer', this)">Customer</button>
+                <button class="relative z-10 flex-1 py-2 text-label-caps font-label-caps text-center text-primary" onclick="switchRole('admin', this)">Admin</button>
+            </div>
+
+            <div id="errorMessage" class="hidden bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-bold text-center rounded-lg p-3"></div>
+
+            <div id="loginSection" class="flex flex-col gap-5">
+                <form class="flex flex-col gap-5" id="loginForm">
+                    <input type="hidden" id="userRole" value="admin"> 
+                    <div class="flex flex-col gap-2">
+                        <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="loginEmail">Email Address</label>
+                        <div class="relative">
+                            <input class="w-full bg-surface-container-lowest border rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30 border-secondary/50" id="loginEmail" placeholder="name@company.com" required type="text">
+                            <div class="absolute right-3 top-1/2 -translate-y-1/2 hidden" id="email-validation">
+                                <span class="material-symbols-outlined text-secondary text-lg">check_circle</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-center px-1">
+                            <label class="text-label-caps font-label-caps text-on-surface-variant" for="loginPassword">Password</label>
+                            <a class="text-label-caps font-label-caps text-primary hover:opacity-80 transition-opacity" href="#">Forgot Password?</a>
+                        </div>
+                        <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="loginPassword" placeholder="••••••••" required type="password">
+                    </div>
+                    <button class="w-full mt-2 py-4 bg-primary text-on-primary font-headline-md rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-primary/20" id="loginBtn" type="submit">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="text-center mt-2">
+                    <button type="button" onclick="toggleAuth('signup')" class="text-sm font-medium text-primary hover:text-white transition-colors">Don't have an account? Sign up here</button>
+                </div>
+            </div>
+
+            <div id="signupSection" class="hidden flex-col gap-5">
+                <form class="flex flex-col gap-5" id="signupForm">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="signupName">Full Name</label>
+                        <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="signupName" placeholder="John Doe" required type="text">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="signupEmail">Email Address</label>
+                        <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="signupEmail" placeholder="name@company.com" required type="email">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="signupPassword">Password</label>
+                        <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="signupPassword" placeholder="••••••••" required type="password">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="signupVerificationId">Verification ID</label>
+                        <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="signupVerificationId" placeholder="Min 6 characters" required type="text">
+                    </div>
+                    <button class="w-full mt-2 py-4 bg-primary text-on-primary font-headline-md rounded-lg hover:brightness-110 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-primary/20" type="submit">
+                        Create Account
+                    </button>
+                </form>
+
+                <div class="text-center mt-2">
+                    <button type="button" onclick="toggleAuth('login')" class="text-sm font-medium text-primary hover:text-white transition-colors">Already have an account? Sign In</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="fixed bottom-8 w-full text-center z-20 pointer-events-none">
+        <div class="flex items-center justify-center gap-4 text-on-surface-variant/40">
+            <span class="text-label-caps font-label-caps">VoltDrive Systems</span>
+            <div class="w-1 h-1 rounded-full bg-on-surface-variant/40"></div>
+            <span class="text-label-caps font-label-caps">v2.4.0 High-Fidelity Gateway</span>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+
+    <script>
+        function switchRole(role, el) {
+            const indicator = document.getElementById('role-indicator');
+            const buttons = el.parentElement.querySelectorAll('button');
+            const roleInput = document.getElementById('userRole');
+            
+            // Updates the hidden input so main.js knows which role is logging in
+            if (roleInput) roleInput.value = role;
+            
+            buttons.forEach(btn => {
+                btn.classList.remove('text-primary');
+                btn.classList.add('text-on-surface-variant');
+            });
+            
+            el.classList.remove('text-on-surface-variant');
+            el.classList.add('text-primary');
+
+            if (role === 'customer') {
+                indicator.style.left = '4px';
+            } else {
+                indicator.style.left = 'calc(50% + 0px)';
+            }
+
+            // Re-trigger validation when role changes so the button unlocks properly
+            const emailInput = document.getElementById('loginEmail');
+            if (emailInput) {
+                emailInput.dispatchEvent(new Event('input'));
+            }
+        }
+
+        const emailInput = document.getElementById('loginEmail');
+        const validationIcon = document.getElementById('email-validation');
+        const loginBtn = document.getElementById('loginBtn');
+
+        if(emailInput) {
+            emailInput.addEventListener('input', (e) => {
+                const val = e.target.value.trim();
+                const roleInput = document.getElementById('userRole');
+                const role = roleInput ? roleInput.value : 'customer';
+                
+                // Checks if it is a standard email format
+                const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+                
+                // If the role is admin, simply typing "admin" bypasses the strict email check
+                const isValid = isEmail || (role === 'admin' && val === 'admin');
+                
+                if (isValid) {
+                    validationIcon.classList.remove('hidden');
+                    loginBtn.disabled = false;
+                    emailInput.classList.add('border-secondary/50');
+                    emailInput.classList.remove('border-outline-variant');
+                } else {
+                    validationIcon.classList.add('hidden');
+                    loginBtn.disabled = true;
+                    emailInput.classList.remove('border-secondary/50');
+                    emailInput.classList.add('border-outline-variant');
+                }
+            });
+        }
+
+        // Parallax animation
+        document.addEventListener('mousemove', (e) => {
+            const bg = document.getElementById('parallax-bg');
+            if (!bg) return;
+            
+            const moveX = (window.innerWidth / 2 - e.clientX) * 0.015;
+            const moveY = (window.innerHeight / 2 - e.clientY) * 0.015;
+            
+            bg.style.transform = `scale(1.08) translate(${moveX}px, ${moveY}px)`;
+        });
+    </script>
+</body>
+</html>
