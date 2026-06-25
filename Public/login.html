@@ -5,7 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>VoltDrive | Unified Authentication Gateway</title>
     
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="/css/style.css">
     
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -123,16 +123,16 @@
             </div>
 
             <div class="relative bg-surface-container-low p-1 rounded-lg flex items-center">
-                <div class="absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-primary/20 border border-primary/30 rounded-lg active-tab-indicator left-1" id="role-indicator" style="left: calc(50% + 0px);"></div>
-                <button class="relative z-10 flex-1 py-2 text-label-caps font-label-caps text-center text-on-surface-variant" onclick="switchRole('customer', this)">Customer</button>
-                <button class="relative z-10 flex-1 py-2 text-label-caps font-label-caps text-center text-primary" onclick="switchRole('admin', this)">Admin</button>
+                <div class="absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-primary/20 border border-primary/30 rounded-lg active-tab-indicator left-1" id="role-indicator" style="left: 4px;"></div>
+                <button class="relative z-10 flex-1 py-2 text-label-caps font-label-caps text-center text-primary" onclick="switchRole('customer', this)">Customer</button>
+                <button class="relative z-10 flex-1 py-2 text-label-caps font-label-caps text-center text-on-surface-variant" onclick="switchRole('admin', this)">Admin</button>
             </div>
 
             <div id="errorMessage" class="hidden bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-bold text-center rounded-lg p-3"></div>
 
             <div id="loginSection" class="flex flex-col gap-5">
                 <form class="flex flex-col gap-5" id="loginForm">
-                    <input type="hidden" id="userRole" value="admin"> 
+                    <input type="hidden" id="userRole" value="customer"> 
                     <div class="flex flex-col gap-2">
                         <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="loginEmail">Email Address</label>
                         <div class="relative">
@@ -165,18 +165,25 @@
                         <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="signupName">Full Name</label>
                         <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="signupName" placeholder="John Doe" required type="text">
                     </div>
+                    
                     <div class="flex flex-col gap-2">
                         <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="signupEmail">Email Address</label>
-                        <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="signupEmail" placeholder="name@company.com" required type="email">
+                        <div class="flex gap-2">
+                            <input class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="signupEmail" placeholder="name@company.com" required type="email">
+                            <button type="button" onclick="sendOtp()" id="sendOtpBtn" class="bg-primary text-on-primary px-4 py-3 rounded-lg font-bold hover:brightness-110 active:scale-[0.98] transition-all duration-200 shadow-md whitespace-nowrap text-sm">Send OTP</button>
+                        </div>
                     </div>
+
                     <div class="flex flex-col gap-2">
                         <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="signupPassword">Password</label>
                         <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="signupPassword" placeholder="••••••••" required type="password">
                     </div>
+
                     <div class="flex flex-col gap-2">
-                        <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="signupVerificationId">Verification ID</label>
-                        <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="signupVerificationId" placeholder="Min 6 characters" required type="text">
+                        <label class="text-label-caps font-label-caps text-on-surface-variant px-1" for="signupVerificationId">Enter Email OTP</label>
+                        <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 placeholder:text-on-surface-variant/30" id="signupVerificationId" placeholder="Enter 6-digit OTP" required type="text">
                     </div>
+
                     <button class="w-full mt-2 py-4 bg-primary text-on-primary font-headline-md rounded-lg hover:brightness-110 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-primary/20" type="submit">
                         Create Account
                     </button>
@@ -198,15 +205,59 @@
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
+    <script src="/js/main.js"></script>
 
     <script>
+        // --- NAYA OTP BHEJNE KA LOGIC ---
+        async function sendOtp() {
+            const emailInput = document.getElementById('signupEmail');
+            const btn = document.getElementById('sendOtpBtn');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            if (!emailInput.value) {
+                errorMsg.className = "bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-bold text-center rounded-lg p-3";
+                errorMsg.innerText = "Please enter an email address first.";
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+            
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+            errorMsg.classList.add('hidden');
+            
+            try {
+                const res = await fetch('/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailInput.value })
+                });
+                const data = await res.json();
+                
+                errorMsg.classList.remove('hidden');
+                if (data.success) {
+                    errorMsg.className = "bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-bold text-center rounded-lg p-3";
+                    errorMsg.innerText = "OTP sent to your email successfully!";
+                    btn.innerText = "Sent \u2713";
+                } else {
+                    errorMsg.className = "bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-bold text-center rounded-lg p-3";
+                    errorMsg.innerText = data.message;
+                    btn.innerText = "Send OTP";
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                errorMsg.className = "bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-bold text-center rounded-lg p-3";
+                errorMsg.innerText = "Server error while sending OTP.";
+                btn.innerText = "Send OTP";
+                btn.disabled = false;
+            }
+        }
+        // --------------------------------
+
         function switchRole(role, el) {
             const indicator = document.getElementById('role-indicator');
             const buttons = el.parentElement.querySelectorAll('button');
             const roleInput = document.getElementById('userRole');
             
-            // Updates the hidden input so main.js knows which role is logging in
             if (roleInput) roleInput.value = role;
             
             buttons.forEach(btn => {
@@ -223,7 +274,6 @@
                 indicator.style.left = 'calc(50% + 0px)';
             }
 
-            // Re-trigger validation when role changes so the button unlocks properly
             const emailInput = document.getElementById('loginEmail');
             if (emailInput) {
                 emailInput.dispatchEvent(new Event('input'));
@@ -240,10 +290,7 @@
                 const roleInput = document.getElementById('userRole');
                 const role = roleInput ? roleInput.value : 'customer';
                 
-                // Checks if it is a standard email format
                 const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-                
-                // If the role is admin, simply typing "admin" bypasses the strict email check
                 const isValid = isEmail || (role === 'admin' && val === 'admin');
                 
                 if (isValid) {
@@ -260,7 +307,6 @@
             });
         }
 
-        // Parallax animation
         document.addEventListener('mousemove', (e) => {
             const bg = document.getElementById('parallax-bg');
             if (!bg) return;
