@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoltDrive Admin | All Bookings</title>
+    <link rel="stylesheet" href="/css/style.css?v=7">
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Geist', sans-serif; } </style>
+</head>
+<body class="bookings-dark-theme min-h-screen flex flex-col">
+
+    <header class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-blue-800 text-3xl">admin_panel_settings</span>
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">VoltDrive <span class="text-blue-600">Admin</span></h1>
+            </div>
+            
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="admin-dashboard.html" class="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">Dashboard</a>
+                <a href="inventory.html" class="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">Fleet Inventory</a>
+                <a href="bookings.html" class="text-sm font-bold text-blue-600 border-b-2 border-blue-600 pb-7 pt-7">All Bookings</a>
+                <a href="customers.html" class="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">Customers</a>
+                <a href="reports.html" class="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">Reports</a>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <button onclick="openMessagesModal()" class="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-xl transition-colors">
+                    <span class="material-symbols-outlined text-lg">mail</span>
+                    Customer Inbox
+                </button>
+
+                <button onclick="executeLogout()" class="flex items-center gap-2 text-sm font-bold text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl transition-colors">
+                    <span class="material-symbols-outlined text-lg">logout</span>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
+        
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Platform Bookings</h2>
+                <p class="text-gray-500 mt-1">Complete reservation history across all customers.</p>
+            </div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[800px]">
+                    <thead>
+                        <tr class="bg-gray-50/50 border-b border-gray-200">
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">Booking ID</th>
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">Customer Details</th>
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">Vehicle Assigned</th>
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">Rental Duration</th>
+                            <th class="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">Total Revenue</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody id="bookingsBody" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="5" class="p-10 text-center text-gray-500 font-medium animate-pulse">
+                                Connecting to secure database...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="adminMessagesModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center">
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-600">mail</span> 
+                    Customer Inbox
+                </h3>
+                <button onclick="closeMessagesModal()" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div id="adminMessagesContainer" class="p-6 overflow-y-auto flex-1 bg-white">
+                </div>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

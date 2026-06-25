@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>VoltDrive | Fleet Discovery</title>
+    <link rel="stylesheet" href="/css/style.css?v=9">
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Geist', sans-serif; }
+    </style>
+</head>
+<body class="discovery-dark-theme min-h-screen flex flex-col">
+
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-blue-600 text-3xl">electric_car</span>
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">VoltDrive</h1>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <button onclick="window.location.href='my-Booking.html'" class="text-gray-600 font-bold hover:text-blue-600 transition-colors px-2 py-2">My Bookings</button>
+                
+                <a href="help.html" class="text-gray-600 font-bold hover:text-blue-600 transition-colors px-2 py-2">Help & Support</a>
+                <a href="about.html" class="text-gray-600 font-bold hover:text-blue-600 transition-colors px-2 py-2">About Us</a>
+                
+                <div class="relative">
+                    <button onclick="toggleProfileDropdown(event)" id="profileMenuBtn" class="w-10 h-10 bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-blue-600 rounded-full flex items-center justify-center transition-all focus:outline-none border border-gray-200">
+                        <span class="material-symbols-outlined text-2xl">account_circle</span>
+                    </button>
+                    
+                    <div id="profileDropdown" class="hidden absolute right-0 mt-3 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl py-2 z-50 animate-fade-in">
+                        <button onclick="openProfileModal()" class="w-full text-left px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">person</span>
+                            My Profile
+                        </button>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <button onclick="executeLogout()" class="w-full text-left px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">logout</span>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
+        
+        <div class="mb-10 text-center">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Explore Our Fleet</h2>
+            <p class="text-gray-500">Find your perfect ride from our vehicle collection.</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-4 mb-10">
+            <div class="flex-1 relative">
+                <span class="material-symbols-outlined absolute left-4 top-3.5 text-gray-400">search</span>
+                <input type="text" id="searchBar" onkeyup="filterFleet()" class="w-full pl-12 pr-4 py-3 rounded-xl border-gray-200 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm" placeholder="Search by model name...">
+            </div>
+            <select id="typeFilter" onchange="filterFleet()" class="py-3 px-4 rounded-xl border-gray-200 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm font-bold text-gray-700">
+                <option value="All">All Vehicle Types</option>
+                <option value="Luxury Sedan">Luxury Sedan</option>
+                <option value="Sport Utility">Sport Utility (SUV)</option>
+                <option value="Compact">Compact</option>
+                <option value="Truck">Truck</option>
+                <option value="Electric Car">Electric Car</option>
+                <option value="Bike">Bike</option>
+                <option value="Bicycle">Bicycle</option>
+            </select>
+            <select id="sortFilter" onchange="filterFleet()" class="py-3 px-4 rounded-xl border-gray-200 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm font-bold text-gray-700">
+                <option value="default">Sort By: Recommended</option>
+                <option value="priceLow">Price: Low to High</option>
+                <option value="priceHigh">Price: High to Low</option>
+            </select>
+        </div>
+
+        <div id="fleetGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="col-span-full text-center py-20">
+                <div class="animate-pulse flex flex-col items-center">
+                    <span class="material-symbols-outlined text-gray-200 text-6xl mb-4">electric_car</span>
+                    <p class="text-gray-400 font-medium">Connecting to fleet database...</p>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+
+    <div id="customerProfileModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl relative border border-gray-100 p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">Account Profile</h3>
+                <button onclick="closeProfileModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+            
+            <div class="flex flex-col items-center mb-6 border-b border-gray-50 pb-6">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center font-bold text-2xl mb-3 border border-blue-100 uppercase" id="customerAvatar">
+                    U
+                </div>
+                <h4 class="text-xl font-bold text-gray-900" id="profileCardName">User Name</h4>
+                <p class="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full font-bold uppercase tracking-wider mt-1" id="profileCardRole">Customer</p>
+            </div>
+
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Full Name</label>
+                    <p class="text-base font-semibold text-gray-900 p-3 bg-gray-50 border border-gray-100 rounded-xl" id="profileDetailName">N/A</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Email Registration</label>
+                    <p class="text-base font-semibold text-gray-900 p-3 bg-gray-50 border border-gray-100 rounded-xl" id="profileDetailEmail">N/A</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Verification ID</label>
+                    <p class="text-base font-semibold text-gray-900 p-3 bg-gray-50 border border-gray-100 rounded-xl" id="profileDetailVerification">N/A</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Account Unique ID</label>
+                    <p class="text-base font-mono font-semibold text-gray-500 p-3 bg-gray-50 border border-gray-100 rounded-xl" id="profileDetailId">#0000</p>
+                </div>
+            </div>
+
+            <div class="mt-4 mb-8 pt-6 border-t border-gray-100">
+                <div class="flex justify-between items-center mb-3">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Security Options</label>
+                    <button onclick="togglePasswordEdit()" class="text-xs font-bold text-blue-600 hover:underline transition-all">Change Password</button>
+                </div>
+                <div id="passwordEditSection" class="hidden flex gap-3 animate-fade-in mt-3">
+                    <input type="password" id="newPasswordInput" placeholder="Enter new password" class="flex-1 px-4 py-3 rounded-xl border-gray-200 focus:ring-blue-500 focus:border-blue-500 bg-white text-sm font-medium">
+                    <button onclick="changePassword()" class="bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-gray-800 transition-colors shadow-sm">Update</button>
+                </div>
+            </div>
+
+            <button onclick="closeProfileModal()" class="w-full py-3.5 font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-md">
+                Close Window
+            </button>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

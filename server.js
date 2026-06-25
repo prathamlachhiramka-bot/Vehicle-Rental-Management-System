@@ -6,12 +6,26 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
+const nodemailer = require('nodemailer'); // Naya email package add kiya
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'Public')));
+
+// --- EMAIL SETUP (Nodemailer) ---
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+// OTPs ko temporarily save karne ke liye
+const otpStore = {}; 
+// --------------------------------
 
 // 1. DATABASE CONNECTION (Secured - Passwords .env file se aayenge)
 const db = mysql.createPool({
@@ -58,16 +72,54 @@ const isAdmin = (req, res, next) => {
 
 // 3. API ROUTES
 
+// --- NAYA ROUTE: OTP BHEJNE KE LIYE ---
+app.post('/api/auth/send-otp', async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    // Generate 6 digit random OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStore[email] = { otp, expires: Date.now() + 10 * 60000 }; // 10 mins expiry
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'VoltDrive - Verify Your Account',
+        text: `Welcome to VoltDrive!\n\nYour account verification OTP is: ${otp}\n\nThis OTP is valid for 10 minutes. Please do not share this with anyone.`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.json({ success: true, message: "OTP sent to your email!" });
+    } catch (error) {
+        console.error("Email Error:", error);
+        res.status(500).json({ message: "Failed to send OTP. Admin needs to check server email settings." });
+    }
+});
+// --------------------------------------
+
 app.post('/api/auth/signup', async (req, res) => {
     const { name, email, password, role, verification_id } = req.body;
     try {
+        // --- NAYA LOGIC: OTP VERIFY KARNA ---
+        const storedData = otpStore[email];
+        if (!storedData) return res.status(400).json({ message: "Please click 'Send OTP' first to verify email." });
+        if (Date.now() > storedData.expires) return res.status(400).json({ message: "OTP has expired. Request a new one." });
+        if (storedData.otp !== verification_id) return res.status(400).json({ message: "Invalid OTP. Please check your email." });
+        // ------------------------------------
+
         const [existing] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
         if (existing.length > 0) return res.status(400).json({ message: "Email already registered" });
+        
         const hashedPassword = await bcrypt.hash(password, 10);
         await db.execute(
             'INSERT INTO users (name, email, password, role, verification_id) VALUES (?, ?, ?, ?, ?)',
-            [name, email, hashedPassword, role || 'customer', verification_id || 'Not Provided']
+            [name, email, hashedPassword, role || 'customer', verification_id]
         );
+        
+        // OTP verify hone ke baad usko memory se hata do
+        delete otpStore[email];
+
         res.status(201).json({ success: true, message: "User registered successfully" });
     } catch (err) { res.status(500).json({ message: err.message }); }
 });
