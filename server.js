@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
-const nodemailer = require('nodemailer'); // Naya email package add kiya
+const nodemailer = require('nodemailer');
 
 const app = express();
 
@@ -23,11 +23,9 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// OTPs ko temporarily save karne ke liye
 const otpStore = {}; 
-// --------------------------------
 
-// 1. DATABASE CONNECTION (Secured - Passwords .env file se aayenge)
+// 1. DATABASE CONNECTION
 const db = mysql.createPool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -72,14 +70,12 @@ const isAdmin = (req, res, next) => {
 
 // 3. API ROUTES
 
-// --- NAYA ROUTE: OTP BHEJNE KE LIYE ---
 app.post('/api/auth/send-otp', async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ message: "Email is required" });
 
-    // Generate 6 digit random OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    otpStore[email] = { otp, expires: Date.now() + 10 * 60000 }; // 10 mins expiry
+    otpStore[email] = { otp, expires: Date.now() + 10 * 60000 }; 
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -96,17 +92,14 @@ app.post('/api/auth/send-otp', async (req, res) => {
         res.status(500).json({ message: "Failed to send OTP. Admin needs to check server email settings." });
     }
 });
-// --------------------------------------
 
 app.post('/api/auth/signup', async (req, res) => {
     const { name, email, password, role, verification_id } = req.body;
     try {
-        // --- NAYA LOGIC: OTP VERIFY KARNA ---
         const storedData = otpStore[email];
         if (!storedData) return res.status(400).json({ message: "Please click 'Send OTP' first to verify email." });
         if (Date.now() > storedData.expires) return res.status(400).json({ message: "OTP has expired. Request a new one." });
         if (storedData.otp !== verification_id) return res.status(400).json({ message: "Invalid OTP. Please check your email." });
-        // ------------------------------------
 
         const [existing] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
         if (existing.length > 0) return res.status(400).json({ message: "Email already registered" });
@@ -117,7 +110,6 @@ app.post('/api/auth/signup', async (req, res) => {
             [name, email, hashedPassword, role || 'customer', verification_id]
         );
         
-        // OTP verify hone ke baad usko memory se hata do
         delete otpStore[email];
 
         res.status(201).json({ success: true, message: "User registered successfully" });
@@ -416,6 +408,18 @@ app.put('/api/users/:id/status', verifyToken, isAdmin, async (req, res) => {
         res.json({ success: true, message: `User status securely changed to ${status}` });
     } catch (err) { res.status(500).json({ message: err.message }); }
 });
+
+// --- NAYA ROUTE: DATABASE KO ZINDA RAKHNE KE LIYE UPTIMEROBOT KE LIYE ---
+app.get('/ping', (req, res) => {
+    db.query('SELECT 1', (err, results) => {
+        if (err) {
+            console.log('Database ping fail ho gaya:', err);
+            return res.status(500).send('Database so raha hai');
+        }
+        res.status(200).send('VoltDrive ka Server aur DB dono zinda hain! ⚡');
+    });
+});
+// -------------------------------------------------------------------------
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'Public', 'login.html'));
