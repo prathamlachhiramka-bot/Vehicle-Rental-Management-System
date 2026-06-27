@@ -6,27 +6,12 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
-const nodemailer = require('nodemailer');
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'Public')));
-
-// --- EMAIL SETUP (Nodemailer) Updated for Render IPv6 Error ---
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
-});
 
 const otpStore = {}; 
 
@@ -75,28 +60,44 @@ const isAdmin = (req, res, next) => {
 
 // 3. API ROUTES
 
+// --- UPDATE: BREVO API KA USE (Nodemailer Hata Diya) ---
 app.post('/api/auth/send-otp', async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ message: "Email is required" });
 
+    // Generate 6 digit random OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStore[email] = { otp, expires: Date.now() + 10 * 60000 }; 
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'VoltDrive - Verify Your Account',
-        text: `Welcome to VoltDrive!\n\nYour account verification OTP is: ${otp}\n\nThis OTP is valid for 10 minutes. Please do not share this with anyone.`
-    };
-
     try {
-        await transporter.sendMail(mailOptions);
+        // Direct API call jo Render block nahi kar payega
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'api-key': process.env.BREVO_API_KEY,
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                sender: { name: "VoltDrive", email: process.env.EMAIL_USER }, 
+                to: [{ email: email }],
+                subject: 'VoltDrive - Verify Your Account',
+                textContent: `Welcome to VoltDrive!\n\nYour account verification OTP is: ${otp}\n\nThis OTP is valid for 10 minutes. Please do not share this with anyone.`
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Brevo API Error: ${JSON.stringify(errorData)}`);
+        }
+
         res.json({ success: true, message: "OTP sent to your email!" });
     } catch (error) {
         console.error("Email Error:", error);
         res.status(500).json({ message: "Failed to send OTP. Admin needs to check server email settings." });
     }
 });
+// --------------------------------------------------------
 
 app.post('/api/auth/signup', async (req, res) => {
     const { name, email, password, role, verification_id } = req.body;
@@ -415,14 +416,14 @@ app.put('/api/users/:id/status', verifyToken, isAdmin, async (req, res) => {
 });
 
 // --- NAYA ROUTE: DATABASE KO ZINDA RAKHNE KE LIYE UPTIMEROBOT KE LIYE ---
-app.get('/ping', (req, res) => {
-    db.query('SELECT 1', (err, results) => {
-        if (err) {
-            console.log('Database ping fail ho gaya:', err);
-            return res.status(500).send('Database so raha hai');
-        }
+app.get('/ping', async (req, res) => {
+    try {
+        await db.execute('SELECT 1');
         res.status(200).send('VoltDrive ka Server aur DB dono zinda hain! ⚡');
-    });
+    } catch (err) {
+        console.error('Database ping fail ho gaya:', err.message);
+        res.status(500).send('Database so raha hai');
+    }
 });
 // -------------------------------------------------------------------------
 
