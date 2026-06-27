@@ -14,12 +14,17 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'Public')));
 
-// --- EMAIL SETUP (Nodemailer) ---
+// --- EMAIL SETUP (Nodemailer) Updated for Render IPv6 Error ---
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
+    },
+    tls: {
+        rejectUnauthorized: false
     }
 });
 
